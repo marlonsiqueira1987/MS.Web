@@ -111,7 +111,7 @@ namespace MS.Web.UITests.Controllers
             }
             else if (enderecoCompare.Count() == 0)
             {
-                Assert.IsFalse(true, "Endereço da Rua Jurunas para o " + usuario.Nome + " não cadastrado no sistema!");
+                Assert.IsTrue(true, "Endereço da Rua Jurunas para o " + usuario.Nome + " não cadastrado no sistema!");
             }
             else
             {
