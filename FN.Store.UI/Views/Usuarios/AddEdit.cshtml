@@ -1,0 +1,245 @@
+﻿<!-- View de Adicionar ou Editar o Usuário -->
+@model MS.Web.UI.Models.Usuario
+@{ ViewBag.Title = $"{(Model.Id == 0 ? "Adicionar" : "Editar")} Usuário"; }
+
+<h2 align="center">@ViewBag.Title</h2>
+
+<form method="post">
+
+    <div class="form-group">
+        <label for="txtTipoPessoa">Tipo Pessoa:</label>
+        @Html.DropDownListFor(m => m.TipoPessoa,
+            new SelectList(ViewBag.TiposPessoas, "Id", "Name"),
+            new { @class = "form-control", @onchange = "getVal()", style = "width:130px;" }
+            )
+        <small>
+            @Html.ValidationMessageFor(m => m.TipoPessoa, null, new { @class = "text-danger" })
+        </small>
+    </div>
+
+    <div class="form-group">
+        <label for="txtNome">Nome / Razão Social:</label>
+        @Html.TextBoxFor(m => m.Nome, new { @class = "form-control", autofocus = "", style = "width:300px;" })
+        <small>
+            @Html.ValidationMessageFor(m => m.Nome, null, new { @class = "text-danger" })
+        </small>
+    </div>
+
+    <div class="form-group">
+        <label for="txtEmail">E-mail:</label>
+        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", autofocus = "", style = "width:300px;" })
+        <small>
+            @Html.ValidationMessageFor(m => m.Email, null, new { @class = "text-danger" })
+        </small>
+    </div>
+
+
+    <div class="form-group">
+        @if (Model.Id == 0)
+        {
+            <label for="txtSenha">Senha:</label>
+            @Html.TextBoxFor(m => m.Senha, new { @class = "form-control", autofocus = "", style = "width:150px;" })
+            <small>
+                @Html.ValidationMessageFor(m => m.Senha, null, new { @class = "text-danger" })
+            </small> }
+        else
+        {
+            @Html.EditorFor(m => m.Senha, new { htmlAttributes = new { @class = "form-control", @style = "display: none" } })}
+    </div>
+
+    <div class="form-group">
+        <label for="txtCPF">CPF / CNPJ:</label>
+        @Html.EditorFor(m => m.CPF, new { htmlAttributes = new { @id = "cpf", @class = "form-control", style = "width:250px;" } })
+        <small>
+            @Html.ValidationMessageFor(m => m.CPF, null, new { @class = "text-danger" })
+        </small>
+    </div>
+
+    <div class="form-group">
+        <label for="txtTelefone">Telefone:</label>
+        @Html.EditorFor(m => m.Telefone, new { htmlAttributes = new { @id = "telefone", @class = "form-control", style = "width:250px;" } })
+        <small>
+            @Html.ValidationMessageFor(m => m.Telefone, null, new { @class = "text-danger" })
+        </small>
+    </div>
+
+    <br />
+    <br />
+    <div>
+        @Html.ValidationSummary(true)
+    </div>
+
+    <div class="form-group">
+        <button class="btn btn-outline-secondary">Salvar</button>
+        <a class="btn btn-outline-info" href="@Url.Action("Index")">Cancelar</a>
+    </div>
+</form>
+
+<br />
+<br />
+
+<table class="table table-responsive-sm p-3">
+    <tr>
+        <td align="center">
+            @{ if (Model.Id != 0)
+                {
+                    { ViewBag.NovoEndereco = Model.Id; }
+                    <a class="btn btn-outline-info" href="@Url.Action("../Enderecos/AddEdit/" + "9999" + Model.Id)">Novo Endereço</a>
+                    
+                } }
+        </td>
+    </tr>
+</table>
+        @*Colocar aqui o form dos Endereços*@
+        @{ ViewBag.Title2 = "Listagem de Endereços"; }
+        <h4 align="center">@ViewBag.Title2</h4>
+        <table class="table table-striped table-hover table-responsive-sm p-3">
+            <thead>
+                <tr>
+                    <th>Tipo Endereço</th>
+                    <th>Endereço</th>
+                    <th>Número</th>
+                    <th>Complemento</th>
+                    <th>CEP</th>
+                    <th>Bairro</th>
+                    <th>Cidade</th>
+                    <th>Estado</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @{ if (Model.Enderecos != null)
+                    {
+                        foreach (MS.Web.UI.Models.Enderecos endereco in Model.Enderecos)
+                        {
+                            <tr id="endereco-@endereco.Id">
+                                <td>@endereco.TipoEndereco</td>
+                                <td>@endereco.Logradouro</td>
+                                <td>@endereco.Numero</td>
+                                <td>@endereco.Complemento</td>
+                                <td>@endereco.Cep</td>
+                                <td>@endereco.Bairro</td>
+                                <td>@endereco.Cidade</td>
+                                <td>@endereco.Estado</td>
+                                <td class="btn-group">
+                                    <a class="btn btn-sm btn-outline-success" href="@Url.Action("AddEdit", "Enderecos", new { id = endereco.Id })"><i class="fas fa-edit"></i> Editar</a>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="DelEnd(@endereco.Id, '@endereco.TipoEndereco')"><i class="fas fa-trash"></i> Excluir</button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                }
+
+
+            </tbody>
+        </table>
+
+    <!-- Adicionando Javascript -->
+    <script>
+
+        function DelEnd(id, nome) {
+            let resp = confirm(`Deseja excluir o endereco ${nome} ?`)
+            if (resp) {
+                //console.log(`Excluir usuario de id ${id}...`)
+                ConfirmDelEnd(id)
+            }
+
+            //alert('é nóis: ' + id + ' outro: ' + nome);
+
+            //$('#nomeEnderecoModal').text(nome)
+            //$('#delModal').data('id', id).modal('show')
+
+        }
+
+
+        function ConfirmDelEnd(id) {
+
+            //let id = $('#delModal').data('id')
+            //alert("Id do Endereço é " + id);
+            //XMLHTTPREQUEST
+            let xhr = new XMLHttpRequest()
+            const url = `/Enderecos/DelEnd/${id}`
+
+            //remover do html
+            let tr = document.querySelector(`#endereco-${id}`)
+            if (tr !== null) {
+                tr.remove()
+            }
+            
+            xhr.open('get', url)
+            xhr.send()
+            alert('Endereço excluído com sucesso!', 'MsWeb')
+
+        }
+
+
+
+        function getVal() {
+            var selectedVal = document.getElementById("TipoPessoa").value;
+            //alert(selectedVal);
+            var $j = jQuery.noConflict();
+
+            if (selectedVal == "Jurídica") {
+                $j(function () {
+                    $j("#cpf").mask("99.999.999/9999-99");
+                });
+            } else {
+                $j(function () {
+                    $j("#cpf").mask("999.999.999-99");
+                });
+            }
+
+            $j(function () {
+                $j("#cep").mask("99999-999");
+            });
+
+            $j(function () {
+                $j("#telefone").mask("(99)99999-9999");
+            });
+
+        };
+
+    </script>
+
+    @section scripts{
+        <script src="~/Scripts/jquery.validate.min.js"></script>
+        <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+        <script src="~/Scripts/bootstrap.validate.js"></script>
+        <script src="~/Scripts/inputmask/inputmask.js"></script>
+        <script src="~/Scripts/jquery-3.1.1.min.js"></script>
+        <script src="~/Scripts/inputmask/jquery.inputmask.bundle.js"></script>
+        <script src="~/Scripts/jquery.mask.js"></script>
+        <script src="~/Scripts/jquery.maskedinput-1.3.1.min.js"></script>
+        <script>
+
+            var $j = jQuery.noConflict();
+            var selectedVal = document.getElementById("TipoPessoa").value;
+            //alert(selectedVal)
+            if (selectedVal == "Jurídica") {
+                $j(function () {
+                    $j("#cpf").mask("99.999.999/9999-99");
+                });
+            } else {
+                $j(function () {
+                    $j("#cpf").mask("999.999.999-99");
+                });
+            }
+
+            $j(function () {
+                $j("#telefone").mask("(99)99999-9999");
+            });
+
+            $j(function () {
+                $j("#cep").mask("99999-999");
+            });
+
+            $j(function () {
+                $j("#telefone").mask("(99)99999-9999");
+            });
+
+
+        </script>
+
+    }
+

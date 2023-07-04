@@ -1,0 +1,49 @@
+﻿<!-- View do Layout utilizado no projeto -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="~/Content/bootstrapCyborg.min.css" rel="stylesheet" />
+    <link href="~/Content/all.min.css" rel="stylesheet" />
+    <link href="~/Content/toastr.min.css" rel="stylesheet" />
+    <link href="~/Content/site.css" rel="stylesheet" />
+    <title>MS Web | @ViewBag.Title</title>
+</head>
+<body>
+
+    @Html.Partial("_menu")
+
+    <div class="container mt-3">
+        @RenderBody()
+    </div>
+
+    <footer class="footer bg-info footer-custom">
+        <div class="container">
+            <span class="text-muted">&copy;@DateTime.Now.Year MS Web</span>
+        </div>
+    </footer>
+
+    <script src="~/Scripts/jquery-3.0.0.min.js"></script>
+    <script src="~/Scripts/toastr.min.js"></script>
+    <script src="~/Scripts/bootstrap.bundle.min.js"></script>
+
+    <!--Show Message para o usuário-->
+    <script type="text/javascript">
+            function showMessage(message){
+                toastr[message.type](message.content, message.title);
+            }
+
+            $(function(){
+                var systemMessage = @Html.Raw(TempData[MS.Web.UI.Controllers.BaseController.SystemMessage]);
+
+                showMessage(systemMessage);
+
+                $('#aShowMessage').click(function(){ showMessage(systemMessage) });
+            });
+    </script>
+
+    @RenderSection("scripts", false)
+
+</body>
+</html>

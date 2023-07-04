@@ -1,0 +1,54 @@
+﻿@model LoginVM
+<!-- View do Login -->
+@{
+    ViewBag.Title = "Login";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="row">
+    <form class="col-md-6 col-sm-12" method="post">
+        <div class="form-group">
+            <label>Primeiro acesso? Entre com login: "<b>sa@gmail.com</b>" e senha "<b>123</b>"</label>
+        </div>
+        <div class="form-group">
+            <label>E-mail</label>
+            @Html.TextBoxFor(model => model.Email, new { @class = "form-control", autofocus = "" })
+            <small>
+                @Html.ValidationMessageFor(model => model.Email, null, new { @class = "text-danger" })
+            </small>
+        </div>
+
+        <div class="form-group">
+            <label>Senha</label>
+            @Html.PasswordFor(model => model.Senha, new { @class = "form-control" })
+            <small>
+                @Html.ValidationMessageFor(model => model.Senha, null, new { @class = "text-danger" })
+            </small>
+        </div>
+
+        <div class="form-group form-check">
+            @Html.CheckBoxFor(model => model.PermanecerLogado, new { @class = "form-check-input" })
+            <label>Permanecer Logado</label>
+        </div>
+
+        <div class="form-group">
+            <button class="btn btn-outline-secondary">
+                Login
+            </button>
+            <a class="btn btn-outline-warning" href="@Url.Action("Index","Home")">Cancelar</a>
+        </div>
+    </form>
+    <br />
+    <br />
+    <div>
+        <label>* Caso não lembrar do acesso, abra o projeto no Visual Studio e entre no arquivo <b>DbInitializer.cs</b> que encontrará os acessos.</label>
+        <label>** <i>Caso tenha apagado todos os usuários, exclua o banco de dados e crie um novamente para acessar.</i></label>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/bootstrap.validate.js"></script>
+}
